@@ -8,13 +8,13 @@ class NotesModel {
 
   factory NotesModel.fromMap(Map<String, dynamic> map) {
     return NotesModel(
-        id: map["id"],
-        userid: map["mapuserid"],
-        title: map["title"],
-        content: map["content"],
-        dateadded: DateTime.tryParse(
-          map["dateadded"],
-        ));
+      id: map["id"],
+      userid: map["mapuserid"],
+      title: map["title"],
+      content: map["content"],
+      dateadded: DateTime.now(),
+      //  DateTime.tryParse(map["dateadded"]) ?? 
+    );
   }
   Map<String, dynamic> toMap() {
     return {
@@ -22,7 +22,8 @@ class NotesModel {
       "userid": userid,
       "title": title,
       "content": content,
-      "dateadded": dateadded!.toIso8601String(),
+      "dateadded":
+          dateadded == null ? DateTime.now() : dateadded!.toIso8601String(),
     };
   }
 }

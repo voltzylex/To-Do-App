@@ -29,11 +29,12 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
   FocusNode noteFocus = FocusNode();
   void addNote() {
     NotesModel newNote = NotesModel(
-        id: Uuid().v1(),
-        userid: "SushilKumar",
-        title: titleController.text,
-        content: contentController.text,
-        dateadded: DateTime.now());
+      id: Uuid().v1(),
+      userid: "SushilKumar",
+      title: titleController.text,
+      content: contentController.text,
+      dateadded: DateTime.now(),
+    );
     Provider.of<NotesProvider>(context, listen: false).addNote(newNote);
     Navigator.pop(context);
   }
@@ -48,6 +49,7 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
                 if (widget.isUpdate) {
                   widget.note!.title = titleController.text;
                   widget.note!.content = contentController.text;
+                  widget.note!.dateadded = DateTime.now();
                   Provider.of<NotesProvider>(context, listen: false)
                       .updateNote(widget.note!);
                   Navigator.pop(context);

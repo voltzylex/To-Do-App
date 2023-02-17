@@ -15,86 +15,92 @@ class HomePage extends StatelessWidget {
     NotesProvider notesProvider = Provider.of<NotesProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Note app"),
+        title: const Text("Note app"),
         centerTitle: true,
       ),
-      body: SafeArea(
-          child: (notesProvider.notes.length > 0)
-              ? GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2),
-                  itemCount: notesProvider.notes.length,
-                  itemBuilder: (context, index) {
-                    NotesModel contentData = notesProvider.notes[index];
-                    return GestureDetector(
-                      onTap: () {
-                        // update
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => AddNewNotePage(
-                                isUpdate: true,
-                                note: contentData,
-                              ),
-                            ));
+      body: (notesProvider.isLoading == false)
+          ? SafeArea(
+              child: (notesProvider.notes.isNotEmpty)
+                  ? GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2),
+                      itemCount: notesProvider.notes.length,
+                      itemBuilder: (context, index) {
+                        NotesModel contentData = notesProvider.notes[index];
+                        return GestureDetector(
+                          onTap: () {
+                            // update
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => AddNewNotePage(
+                                    isUpdate: true,
+                                    note: contentData,
+                                  ),
+                                ));
+                          },
+                          onLongPress: () {
+                            notesProvider.deleteNote(contentData);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(color: Colors.grey, width: 2),
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  contentData.title!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  contentData.content!,
+                                  maxLines: 5,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
-                      onLongPress: () {
-                        notesProvider.deleteNote(contentData);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(10),
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.grey, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              contentData.title!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              contentData.content!,
-                              maxLines: 5,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15,
-                                color: Colors.grey[700],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                )
-              : Center(
-                  child: Text("Create New Notes"),
-                )),
+                    )
+                  : const Center(
+                      child: Text("Create New Notes"),
+                    ))
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             CupertinoPageRoute(
               fullscreenDialog: true,
-              builder: (context) => AddNewNotePage(
+              builder: (context) => const AddNewNotePage(
                 isUpdate: false,
               ),
             ),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
