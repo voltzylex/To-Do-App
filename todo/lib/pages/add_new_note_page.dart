@@ -5,8 +5,9 @@ import 'package:todo/providers/notes_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AddNewNotePage extends StatefulWidget {
-  const AddNewNotePage({super.key});
-
+  const AddNewNotePage({super.key, required this.isUpdate, this.note});
+  final bool isUpdate;
+  final NotesModel? note;
   @override
   State<AddNewNotePage> createState() => _AddNewNotePageState();
 }
@@ -14,6 +15,16 @@ class AddNewNotePage extends StatefulWidget {
 class _AddNewNotePageState extends State<AddNewNotePage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isUpdate == true) {
+      titleController.text = widget.note!.title!;
+      contentController.text = widget.note!.content!;
+    }
+  }
+
   // Focus node is used to focus the field which on interaction is submited or changed
   FocusNode noteFocus = FocusNode();
   void addNote() {
@@ -34,7 +45,15 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
         actions: [
           IconButton(
               onPressed: () {
-                addNote();
+                if (widget.isUpdate) {
+                  widget.note!.title = titleController.text;
+                  widget.note!.content = contentController.text;
+                  Provider.of<NotesProvider>(context, listen: false)
+                      .updateNote(widget.note!);
+                  Navigator.pop(context);
+                } else {
+                  addNote();
+                }
               },
               icon: const Icon(Icons.check))
         ],
@@ -50,7 +69,7 @@ class _AddNewNotePageState extends State<AddNewNotePage> {
                 noteFocus.requestFocus();
               }
             },
-            autofocus: true,
+            autofocus: (widget.isUpdate == true) ? false : true,
             decoration: const InputDecoration(
               hintText: "Title",
             ),
